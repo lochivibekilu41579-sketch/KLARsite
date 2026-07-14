@@ -107,16 +107,9 @@
   };
 
   const knownProductHeadings = new Set([
-    "Назначение",
-    "Подходит для",
-    "Не подходит для",
-    "Состав",
-    "Инструкция по применению",
-    "Рекомендации",
-    "Предупреждения",
-    "Предупреждения и ограничения",
-    "Ограничения",
-    "Ограничения и предупреждения"
+    "Склад",
+    "Інструкція із застосування",
+    "Рекомендації та обмеження"
   ]);
 
   const parseProductBlocks = (body) => {
@@ -135,7 +128,7 @@
       const next = markers[index + 1];
       const end = next ? next.start : body.length;
       blocks[current.title] = body.slice(current.contentStart, end)
-        .split(/\n\*\*Источник:\*\*/)[0]
+        .split(/\n\*\*Джерело:\*\*/)[0]
         .split(/\n---[ \t]*/)[0]
         .replace(/^\s+|\s+$/g, "");
       return blocks;
@@ -151,18 +144,10 @@
       const bodyStart = heading.index + heading[0].length;
       const bodyEnd = nextHeading ? nextHeading.index : source.length;
       const blocks = parseProductBlocks(source.slice(bodyStart, bodyEnd));
-      const recommendations = [
-        blocks["Рекомендации"],
-        blocks["Предупреждения и ограничения"],
-        blocks["Ограничения и предупреждения"],
-        blocks["Предупреждения"],
-        blocks["Ограничения"]
-      ].filter(Boolean).join("\n\n");
-
       products[Number(heading[1])] = {
-        instruction: blocks["Инструкция по применению"] || "",
-        composition: blocks["Состав"] || "",
-        recommendations
+        instruction: blocks["Інструкція із застосування"] || "",
+        composition: blocks["Склад"] || "",
+        recommendations: blocks["Рекомендації та обмеження"] || ""
       };
       return products;
     }, {});
@@ -171,7 +156,7 @@
   const loadProductDetails = () => {
     if (!productDetailsCache) {
       if (!window.KLAR_PRODUCT_SOURCE) {
-        return Promise.reject(new Error("Embedded product data is unavailable"));
+        return Promise.reject(new Error("Вбудовані дані про товари недоступні"));
       }
       productDetailsCache = parseProductSource(window.KLAR_PRODUCT_SOURCE);
     }
@@ -278,7 +263,7 @@
         ? colorLiquidDetails
         : (await loadProductDetails())[productSourceSections[productId]];
 
-      if (!details) throw new Error("Product details not found");
+      if (!details) throw new Error("Деталі товару не знайдено");
       renderProductBlock(productInstruction, details.instruction);
       renderProductBlock(productComposition, details.composition);
       renderProductBlock(productRecommendations, details.recommendations);
