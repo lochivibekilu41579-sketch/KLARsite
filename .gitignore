@@ -1,0 +1,18 @@
+# Local tooling and generated test artifacts
+.playwright-cli/
+output/
+.agents/
+.codex/
+node_modules/
+*.log
+Thumbs.db
+.DS_Store
+
+# Raw working materials that are not required by the published site
+/image KLAR/
+/assets/products/*.jpg
+/assets/products/edited/*.png
+/BRAND BOOK UkrAqua.md
+/KLAR_analiz_TSA_UA.md
+/deep-research-report.md
+/Безпечна_побутова_хімія_для_дому_УкрАква_39d1f9288a04807396b2f94488964e95.md
